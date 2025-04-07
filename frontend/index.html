@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend</title>
+    <script>
+        async function callBackend() {
+            try {
+                const response = await fetch("http://backend:3000/api");
+                const data = await response.text();
+                document.getElementById("result").innerText = data;
+            } catch (err) {
+                document.getElementById("result").innerText = "⚠️ 백엔드 연결 실패!";
+            }
+        }
+
+        window.onload = callBackend;
+    </script>
+</head>
+<body>
+<h1>💻 Hello from Frontend!</h1>
+<p>📡 백엔드 응답: <span id="result">불러오는 중...</span></p>
+</body>
+</html>
