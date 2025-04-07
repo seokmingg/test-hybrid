@@ -42,3 +42,4 @@ jobs:
           platforms: linux/amd64,linux/arm64   # 요거!
           push: true
           tags: ${{ env.HARBOR_URL }}/${{ env.HARBOR_PROJECT }}/backend:${{ env.IMAGE_TAG }}
+          #
