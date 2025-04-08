@@ -15,7 +15,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req) {
-    return this.authService.login(req.user)
+    return req.user
   }
 
   @Get('kakao')
@@ -27,6 +27,6 @@ export class AuthController {
   @Get('kakao/callback')
   @UseGuards(AuthGuard('kakao'))
   async kakaoAuthRedirect(@Req() req) {
-    return this.authService.login(req.user)
+    return req.user
   }
 } 
