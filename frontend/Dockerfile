@@ -1,18 +1,20 @@
 # Build stage
 FROM node:18-alpine AS builder
 
+# Build-time secret
+ARG NEXTAUTH_SECRET
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+
 WORKDIR /app
 
-# Copy package files
+# Copy dependencies
 COPY package*.json ./
-
-# Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source
 COPY . .
 
-# Build the application
+# Build Next.js app (uses NEXTAUTH_SECRET at build time)
 RUN npm run build
 
 # Production stage
@@ -20,19 +22,17 @@ FROM node:18-alpine AS runner
 
 WORKDIR /app
 
-# Copy necessary files from builder
+# Copy artifacts
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next ./.next
 
-# Set environment variables
+# Run-time secrets
 ENV NODE_ENV=production
 ENV PORT=80
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 
-# Expose port
 EXPOSE 80
-
-# Start the application
-CMD ["npm", "run", "start"] 
+CMD ["npm", "run", "start"]
