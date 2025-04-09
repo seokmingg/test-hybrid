@@ -36,6 +36,11 @@ jobs:
           tags: ${{ env.HARBOR_URL }}/${{ env.HARBOR_PROJECT }}/frontend:${{ env.IMAGE_TAG }}
           build-args: |
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+            KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+            
 
       - name: Build and push backend
         uses: docker/build-push-action@v5
