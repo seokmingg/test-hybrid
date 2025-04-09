@@ -7,7 +7,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 })
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
+    const response = await fetch(`${process.env.SERVER_API_URL}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

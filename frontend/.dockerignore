@@ -1,0 +1,39 @@
+# === Node.js 관련 ===
+node_modules
+.pnpm
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# === Next.js ===
+.next
+out
+build
+
+# === 테스트, 분석 ===
+coverage
+*.tsbuildinfo
+next-env.d.ts
+
+# === 환경 변수 ===
+.env*
+*.pem
+
+# === 불필요한 파일 ===
+.DS_Store
+.vercel
+
+# === Git 관련 (도커 이미지엔 필요 없음) ===
+.git
+.gitignore
+
+# === 도커파일도 불포함시키는 경우 (선택사항) ===
+.dockerignore
+Dockerfile
