@@ -8,7 +8,7 @@ env:
   HARBOR_URL: harbor.seokmin.com
   HARBOR_PROJECT: test
   IMAGE_TAG: latest
-
+  NEXT_PUBLIC_API_URL: https://test.seokmin.com
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -35,11 +35,8 @@ jobs:
           push: true
           tags: ${{ env.HARBOR_URL }}/${{ env.HARBOR_PROJECT }}/frontend:${{ env.IMAGE_TAG }}
           build-args: |
-            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
-            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-            KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
-            KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+            NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL}}
+
             
 
       - name: Build and push backend
@@ -50,4 +47,14 @@ jobs:
           push: true
           tags: ${{ env.HARBOR_URL }}/${{ env.HARBOR_PROJECT }}/backend:${{ env.IMAGE_TAG }}
           build-args: |
-            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            JWT_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            FRONTEND_URL=${{ env.NEXT_PUBLIC_API_URL}}
+            BACKEND_URL=${{ env.NEXT_PUBLIC_API_URL}}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+            KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+            POSTGRES_USERNAME=${{ secrets.POSTGRES_USERNAME }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            POSTGRES_DBNAME=${{ secrets.POSTGRES_DBNAME }}
+            POSTGRES_HOST=postgres.test.svc.cluster.local

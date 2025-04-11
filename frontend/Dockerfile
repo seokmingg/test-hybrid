@@ -1,41 +1,40 @@
-# Build stage
+# 빌드 스테이지
 FROM node:18-alpine AS builder
-
-ARG NEXTAUTH_SECRET
-ARG GOOGLE_CLIENT_ID
-ARG GOOGLE_CLIENT_SECRET
-ARG KAKAO_CLIENT_ID
-ARG KAKAO_CLIENT_SECRET
-
 
 WORKDIR /app
 
+# 의존성 파일 복사 및 설치
 COPY package*.json ./
 RUN npm ci
+
+# 소스 코드 복사
 COPY . .
 
-# 빌드할 때 필요한 환경변수만 ARG로 받아 사용
-RUN NEXTAUTH_SECRET=$NEXTAUTH_SECRET \
-    GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
-    GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
-    KAKAO_CLIENT_ID=$KAKAO_CLIENT_ID \
-    KAKAO_CLIENT_SECRET=$KAKAO_CLIENT_SECRET \
-    npm run build
 
-# Production stage
+# 빌드
+RUN npm run build
+
+# 실행 스테이지
 FROM node:18-alpine AS runner
 
 WORKDIR /app
 
+# 필요한 파일만 복사
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
 
+# 환경 변수 설정
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NODE_ENV=production
 ENV PORT=80
 
-# 여기선 민감 정보 ENV 넣지 말고, 쿠버네티스에서 주입!
+# 포트 노출
+
 EXPOSE 80
-CMD ["npm", "run", "start"]
+
+# 애플리케이션 실행
+CMD ["npm", "start"] 

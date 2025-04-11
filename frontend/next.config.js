@@ -1,10 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  output: 'standalone',
-  images: {
-    domains: ['lh3.googleusercontent.com', 'k.kakaocdn.net'],
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
+        has: [
+          {
+            type: 'query',
+            key: 'code',
+            value: undefined
+          }
+        ]
+      }
+    ];
   },
-}
+};
 
-module.exports = nextConfig 
+module.exports = nextConfig; 

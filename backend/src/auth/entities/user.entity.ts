@@ -1,31 +1,35 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Memo } from '../../memo/memo.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: string;
 
-  @Column()
-  email: string
-
-  @Column()
-  name: string
+  @Column({ unique: true })
+  email: string;
 
   @Column({ nullable: true })
-  googleId: string
+  password: string;
 
   @Column({ nullable: true })
-  kakaoId: string
+  googleId: string;
 
-  @Column({ default: 0 })
-  dailyChatCount: number
+  @Column({ nullable: true })
+  kakaoId: string;
 
-  @Column({ type: 'timestamp', nullable: true })
-  lastChatDate: Date
+  @Column({ nullable: true })
+  name: string;
+
+  @Column({ nullable: true })
+  picture: string;
+
+  @OneToMany(() => Memo, memo => memo.user)
+  memos: Memo[];
 
   @CreateDateColumn()
-  createdAt: Date
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date
+  updatedAt: Date;
 } 
