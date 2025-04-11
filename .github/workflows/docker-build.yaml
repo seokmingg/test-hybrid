@@ -57,4 +57,4 @@ jobs:
             POSTGRES_USERNAME=${{ secrets.POSTGRES_USERNAME }}
             POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
             POSTGRES_DBNAME=${{ secrets.POSTGRES_DBNAME }}
-            POSTGRES_HOST=test-hybrid-postgresql-ha-haproxy.test.svc.cluster.local
+            POSTGRES_HOST=test-hybrid-postgresql-ha-pgpool.test.svc.cluster.local
