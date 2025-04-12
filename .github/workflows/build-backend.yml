@@ -1,18 +1,21 @@
-name: Build and Push to Harbor
+name: Build and Push Backend to Harbor
 
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "backend/**"
+      - ".github/workflows/build-backend.yml"
 
 env:
   HARBOR_URL: harbor.seokmin.com
   HARBOR_PROJECT: test
   IMAGE_TAG: latest
   NEXT_PUBLIC_API_URL: https://test.seokmin.com
-jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
 
+jobs:
+  build-and-push-backend:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,18 +30,6 @@ jobs:
           username: ${{ secrets.HARBOR_USERNAME }}
           password: ${{ secrets.HARBOR_PASSWORD }}
 
-      - name: Build and push frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ env.HARBOR_URL }}/${{ env.HARBOR_PROJECT }}/frontend:${{ env.IMAGE_TAG }}
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL}}
-
-            
-
       - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
@@ -48,8 +39,8 @@ jobs:
           tags: ${{ env.HARBOR_URL }}/${{ env.HARBOR_PROJECT }}/backend:${{ env.IMAGE_TAG }}
           build-args: |
             JWT_SECRET=${{ secrets.NEXTAUTH_SECRET }}
-            FRONTEND_URL=${{ env.NEXT_PUBLIC_API_URL}}
-            BACKEND_URL=${{ env.NEXT_PUBLIC_API_URL}}
+            FRONTEND_URL=${{ env.NEXT_PUBLIC_API_URL }}
+            BACKEND_URL=${{ env.NEXT_PUBLIC_API_URL }}
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
