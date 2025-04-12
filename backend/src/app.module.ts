@@ -6,9 +6,6 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { MemoModule } from './memo/memo.module';
 
-import { WinstonModule } from 'nest-winston';
-import * as winston from 'winston';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,19 +21,6 @@ import * as winston from 'winston';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-
-    // ✅ WinstonModule 등록
-    WinstonModule.forRoot({
-      transports: [
-        new winston.transports.Console({
-          format: winston.format.combine(
-              winston.format.timestamp(),
-              winston.format.json(),
-          ),
-        }),
-      ],
-    }),
-
     AuthModule,
     MemoModule,
   ],
