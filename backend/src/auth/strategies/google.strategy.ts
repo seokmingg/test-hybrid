@@ -11,7 +11,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
       private readonly authService: AuthService,
       @Inject(WINSTON_MODULE_NEST_PROVIDER)
-      private readonly logger: Logger,
+      private readonly _logger: Logger, // 🔐 안전하게 이름 변경
   ) {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
@@ -29,7 +29,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const { id, emails, displayName } = profile;
     const email = emails[0].value;
 
-    this.logger.info('구글 로그인 요청', {
+    this._logger.info('구글 로그인 요청', {
       googleId: id,
       email,
       displayName,
@@ -38,7 +38,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     let user = await this.authService.validateUser(email);
 
     if (!user) {
-      this.logger.info('신규 사용자, 계정 생성 중', {
+      this._logger.info('신규 사용자, 계정 생성 중', {
         email,
         googleId: id,
       });
@@ -49,9 +49,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         googleId: id,
       });
 
-      this.logger.info('신규 사용자 생성 완료', { userId: user.id });
+      this._logger.info('신규 사용자 생성 완료', { userId: user.id });
     } else {
-      this.logger.info('기존 사용자 로그인', { userId: user.id });
+      this._logger.info('기존 사용자 로그인', { userId: user.id });
     }
 
     return user;

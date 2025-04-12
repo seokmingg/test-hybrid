@@ -11,7 +11,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   constructor(
       private readonly authService: AuthService,
       @Inject(WINSTON_MODULE_NEST_PROVIDER)
-      private readonly logger: Logger,
+      private readonly _logger: Logger, // 💡 이름만 바꿔줘도 안전
   ) {
     super({
       clientID: process.env.KAKAO_CLIENT_ID,
@@ -29,7 +29,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     const email = _json.kakao_account.email;
     const nickname = _json.properties.nickname;
 
-    this.logger.info('카카오 로그인 요청', {
+    this._logger.info('카카오 로그인 요청', {
       kakaoId: id,
       email,
       nickname,
@@ -38,7 +38,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     let user = await this.authService.validateUser(email);
 
     if (!user) {
-      this.logger.info('신규 사용자, 계정 생성 중', {
+      this._logger.info('신규 사용자, 계정 생성 중', {
         email,
         kakaoId: id,
       });
@@ -49,9 +49,9 @@ export class KakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
         kakaoId: id,
       });
 
-      this.logger.info('신규 사용자 생성 완료', { userId: user.id });
+      this._logger.info('신규 사용자 생성 완료', { userId: user.id });
     } else {
-      this.logger.info('기존 사용자 로그인', { userId: user.id });
+      this._logger.info('기존 사용자 로그인', { userId: user.id });
     }
 
     return user;
