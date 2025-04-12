@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+
 import { useRouter } from 'next/router';
-import axios from 'axios';
+
 import { User } from '../types/user';
+import { api } from '../services/api';
+
 
 interface Memo {
   id: string;
@@ -16,6 +18,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [memos, setMemos] = useState<Memo[]>([]);
   const [newMemo, setNewMemo] = useState('');
+
 
   useEffect(() => {
     // URL에서 토큰 파라미터 확인
@@ -32,21 +35,14 @@ export default function Home() {
     const fetchUser = async () => {
       try {
         const savedToken = localStorage.getItem('token');
-        // console.log('Saved token:', savedToken);
-
         if (!savedToken) {
           setUser(null);
           setLoading(false);
           return;
         }
 
-        const response = await axios.get('/api/auth/profile', {
-          headers: {
-            Authorization: `Bearer ${savedToken}`
-          }
-        });
-        // console.log('Profile response:', response.data);
-        setUser(response.data);
+        const userData = await api.getProfile(savedToken);
+        setUser(userData);
         fetchMemos();
       } catch (error) {
         console.error('사용자 정보를 가져오는데 실패했습니다:', error);
@@ -65,12 +61,8 @@ export default function Home() {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.get('/api/memo', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setMemos(response.data);
+      const memosData = await api.getMemos(token);
+      setMemos(memosData);
     } catch (error) {
       console.error('메모를 가져오는데 실패했습니다:', error);
     }
@@ -100,21 +92,15 @@ export default function Home() {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      await axios.post(
-        '/api/memo',
-        { content: newMemo },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      await api.createMemo(token, newMemo);
       setNewMemo('');
       fetchMemos();
     } catch (error) {
       console.error('메모 저장에 실패했습니다:', error);
     }
   };
+
+
 
   if (loading) {
     return <div>로딩 중...</div>;
