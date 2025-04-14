@@ -1,4 +1,4 @@
-name: Build and Push Frontend to Harbor
+name: Build and Push Frontend to Harbor and Update GitOps
 
 on:
   push:
@@ -10,14 +10,18 @@ on:
 env:
   HARBOR_URL: harbor.seokmin.com
   HARBOR_PROJECT: test
-  IMAGE_TAG: latest
   NEXT_PUBLIC_API_URL: https://test.seokmin.com
+  GITOPS_REPO: seokmingg/hybrid-cloud
+  GITOPS_PATH: helm/service/test-hybrid/values.yaml
 
 jobs:
   build-and-push-frontend:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Set dynamic image tag
+        run: echo "IMAGE_TAG=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+
+      - name: Checkout source repo
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -39,3 +43,26 @@ jobs:
           tags: ${{ env.HARBOR_URL }}/${{ env.HARBOR_PROJECT }}/frontend:${{ env.IMAGE_TAG }}
           build-args: |
             NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }}
+
+      - name: Clone GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GITOPS_REPO }}
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          path: gitops
+
+      - name: Install yq
+        run: sudo snap install yq
+
+      - name: Update frontend image tag in GitOps
+        run: |
+          cd gitops
+          yq e '.frontend.image.tag = "${{ env.IMAGE_TAG }}"' -i ${{ env.GITOPS_PATH }}
+
+      - name: Commit and push updated values.yaml
+        run: |
+          cd gitops
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git commit -am "ci: Update frontend image tag to ${{ env.IMAGE_TAG }}"
+          git push origin main
