@@ -12,7 +12,7 @@ env:
   HARBOR_PROJECT: test
   NEXT_PUBLIC_API_URL: https://test.seokmin.com
   GITOPS_REPO: seokmingg/hybrid-cloud
-  GITOPS_PATH: helm/service/test-hybrid/values.yaml
+  GITOPS_PATH: helm/service/test-hybrid/test-hybrid-app/values-canary.yaml
 
 jobs:
   build-and-push-backend:
