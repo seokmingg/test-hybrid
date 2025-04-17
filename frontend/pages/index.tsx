@@ -108,7 +108,7 @@ export default function Home() {
   // console.log('유저',user)
   return (
     <div className="container">
-      <h1>소셜로그인 테스트</h1>
+      <h1>소셜로그인 테스트 v2</h1>
 
 
 
