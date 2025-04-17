@@ -19,7 +19,7 @@ export default function Home() {
   const [memos, setMemos] = useState<Memo[]>([]);
   const [newMemo, setNewMemo] = useState('');
 
-
+  //
   useEffect(() => {
     // URL에서 토큰 파라미터 확인
     const params = new URLSearchParams(window.location.search);
