@@ -17,5 +17,7 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   await app.listen(process.env.PORT || 3000);
   logger.log(`🚀 서버 실행 중: http://localhost:${process.env.PORT || 3000}`);
+  logger.log(`🚀  canary test`);
+  logger.log(`🚀  canary test`);
 }
 bootstrap();
